@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}HouseSplit — Shared expenses, settled{% endblock %}
+{% block content %}
+<section class="landing-nav"><a class="brand dark" href="/"><span class="brand-mark">H</span><span>HouseSplit</span></a><div><a class="text-link" href="/login">Sign in</a><a class="button small" href="/register">Create account</a></div></section>
+<section class="landing-grid">
+  <div class="landing-copy">
+    <span class="kicker">A calmer way to share a home</span>
+    <h1>Shared expenses,<br><em>finally settled.</em></h1>
+    <p>Log the groceries, split the utilities, and know exactly where everyone stands—without another spreadsheet or group-chat calculation.</p>
+    <div class="button-row"><a class="button" href="/register">Start your house</a><a class="quiet-link" href="/login">I already have an account →</a></div>
+    <div class="trust-line"><span>Exact splits</span><span>Clear balances</span><span>No payment fees</span></div>
+  </div>
+  <div class="preview-stack" aria-label="HouseSplit dashboard preview">
+    <div class="preview-paper">
+      <div class="preview-top"><span>Sunday House</span><span class="mini-avatar">E</span></div>
+      <p class="eyebrow">Your balance</p><strong class="preview-balance">+$184.20</strong><p class="positive">You’re owed</p>
+      <div class="preview-rule"><span>Recent house spending</span><b>$692.14</b></div>
+      <div class="preview-row"><span class="category-dot groceries"></span><span><b>Weekend groceries</b><small>Paid by Erin</small></span><strong>$86.42</strong></div>
+      <div class="preview-row"><span class="category-dot utilities"></span><span><b>August electricity</b><small>Paid by Sam</small></span><strong>$142.18</strong></div>
+      <div class="preview-row"><span class="category-dot supplies"></span><span><b>Kitchen restock</b><small>Paid by Maya</small></span><strong>$39.60</strong></div>
+    </div>
+    <div class="preview-note"><span class="eyebrow">Next settle-up</span><strong>Sam pays Erin</strong><span>$61.40</span></div>
+  </div>
+</section>
+{% endblock %}
+

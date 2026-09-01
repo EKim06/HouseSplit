@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#715458">
+  <title>{% block title %}HouseSplit{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='app.css') }}">
+  <script defer src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js"></script>
+  {% block head %}{% endblock %}
+</head>
+<body class="{% if current_user %}app-shell{% else %}public-shell{% endif %}" hx-boost="true">
+  {% if current_user %}
+  <header class="topbar">
+    <a class="brand" href="/houses" aria-label="HouseSplit home"><span class="brand-mark">H</span><span>HouseSplit</span></a>
+    <div class="topbar-house">
+      {% if active_house %}
+      <span class="eyebrow">Current house</span>
+      <strong>{{ active_house.name }}</strong>
+      {% endif %}
+    </div>
+    <div class="account-menu">
+      <span class="avatar" aria-hidden="true">{{ current_user.name[:1]|upper }}</span>
+      <span class="account-name">{{ current_user.name }}</span>
+      <form action="/logout" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button class="text-button" type="submit">Sign out</button>
+      </form>
+    </div>
+  </header>
+  {% endif %}
+
+  {% if current_user and active_house %}
+  <aside class="sidebar" aria-label="House navigation">
+    <div class="house-switcher">
+      <label for="house-switch">Your houses</label>
+      <select id="house-switch" onchange="if(this.value) location.href=this.value">
+        {% for house in houses %}<option value="/houses/{{ house.id }}" {% if house.id == active_house.id %}selected{% endif %}>{{ house.name }}</option>{% endfor %}
+        <option value="/houses">Manage houses…</option>
+      </select>
+    </div>
+    <nav class="side-nav">
+      <a href="/houses/{{ active_house.id }}" class="{% if request.url.path == '/houses/' ~ active_house.id %}active{% endif %}"><span>Overview</span><b>01</b></a>
+      <a href="/houses/{{ active_house.id }}/purchases/new" class="{% if '/purchases/' in request.url.path %}active{% endif %}"><span>Add purchase</span><b>02</b></a>
+      <a href="/houses/{{ active_house.id }}/settle" class="{% if '/settle' in request.url.path %}active{% endif %}"><span>Settle up</span><b>03</b></a>
+      <a href="/houses/{{ active_house.id }}/analytics" class="{% if '/analytics' in request.url.path %}active{% endif %}"><span>Analytics</span><b>04</b></a>
+      <a href="/houses/{{ active_house.id }}/categories" class="{% if '/categories' in request.url.path %}active{% endif %}"><span>Categories</span><b>05</b></a>
+    </nav>
+    <div class="invite-card">
+      <span class="eyebrow">Room for one more?</span>
+      <p>Share this private invite link with a roommate.</p>
+      <button class="copy-button" type="button" data-copy="{{ request.base_url }}join/{{ active_house.invite_code }}">Copy invite link</button>
+    </div>
+  </aside>
+  {% endif %}
+
+  <main class="{% if current_user and active_house %}main-content{% else %}public-content{% endif %}" id="main-content">
+    {% for item in flashes %}
+    <div class="toast {{ item.kind }}" role="status"><span>{{ item.message }}</span><button type="button" aria-label="Dismiss">×</button></div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+
+  {% if current_user and active_house %}
+  <nav class="mobile-nav" aria-label="Mobile navigation">
+    <a href="/houses/{{ active_house.id }}">Home</a>
+    <a href="/houses/{{ active_house.id }}/settle">Settle</a>
+    <a class="mobile-add" href="/houses/{{ active_house.id }}/purchases/new" aria-label="Add purchase">＋</a>
+    <a href="/houses/{{ active_house.id }}/analytics">Trends</a>
+    <a href="/houses">Houses</a>
+  </nav>
+  {% endif %}
+  <script src="{{ url_for('static', path='app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

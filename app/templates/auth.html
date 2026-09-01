@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Create your account' if mode == 'register' else 'Welcome back' }} — HouseSplit{% endblock %}
+{% block content %}
+<section class="auth-layout">
+  <div class="auth-brand-panel">
+    <a class="brand" href="/"><span class="brand-mark">H</span><span>HouseSplit</span></a>
+    <div><span class="kicker light">Keep home life easy</span><h1>The money part of living together, made simple.</h1><p>One shared ledger. Clear balances. No awkward math.</p></div>
+    <blockquote>“The best household systems are the ones nobody has to think about.”</blockquote>
+  </div>
+  <div class="auth-form-wrap">
+    <div class="auth-form">
+      <span class="eyebrow">{{ 'New to HouseSplit' if mode == 'register' else 'Welcome home' }}</span>
+      <h2>{{ 'Create your account' if mode == 'register' else 'Sign in to your house' }}</h2>
+      <p>{{ 'Start a house or join one with an invite.' if mode == 'register' else 'Your house ledger is right where you left it.' }}</p>
+      {% if error %}<div class="form-error" role="alert">{{ error }}</div>{% endif %}
+      <form method="post" action="/{{ mode }}" class="stacked-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        {% if mode == 'register' %}<label>Full name<input name="name" required minlength="2" autocomplete="name" value="{{ values.get('name','') if values else '' }}" placeholder="Alex Morgan"></label>{% endif %}
+        <label>Email address<input type="email" name="email" required autocomplete="email" value="{{ values.get('email','') if values else '' }}" placeholder="you@example.com"></label>
+        <label>Password<input type="password" name="password" required minlength="8" autocomplete="{{ 'new-password' if mode == 'register' else 'current-password' }}" placeholder="At least 8 characters"></label>
+        <button class="button full" type="submit">{{ 'Create account' if mode == 'register' else 'Sign in' }}</button>
+      </form>
+      <p class="form-switch">{{ 'Already have an account?' if mode == 'register' else 'New to HouseSplit?' }} <a href="/{{ 'login' if mode == 'register' else 'register' }}">{{ 'Sign in' if mode == 'register' else 'Create an account' }}</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}
+

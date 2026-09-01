@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Join {{ house.name }} — HouseSplit{% endblock %}
+{% block content %}
+<div class="standalone-page narrow"><div class="join-card"><span class="house-letter large">{{ house.name[:1]|upper }}</span><span class="kicker">You’re invited</span><h1>Join {{ house.name }}</h1><p>Share purchases, see balances, and settle expenses with the rest of the house.</p>{% if existing %}<a class="button" href="/houses/{{ house.id }}">Open house</a>{% else %}<form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button" type="submit">Join this house</button></form>{% endif %}</div></div>
+{% endblock %}
+

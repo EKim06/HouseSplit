@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ active_house.name }} — HouseSplit{% endblock %}
+{% block content %}
+<div class="dashboard-heading"><div><span class="kicker">{{ active_house.name }}</span><h1>Good {{ 'morning' if request.url else 'day' }}, {{ current_user.name.split()[0] }}.</h1><p>Here’s where the house stands today.</p></div><a class="button" href="/houses/{{ active_house.id }}/purchases/new">＋ Add purchase</a></div>
+<section class="balance-layout">
+  <article class="balance-hero {{ 'positive-card' if user_balance >= 0 else 'negative-card' }}">
+    <div><span class="eyebrow">Your net balance</span><strong>{{ user_balance|money }}</strong><p>{% if user_balance > 0 %}You’re owed money across this house.{% elif user_balance < 0 %}You have a balance to settle.{% else %}Everything is beautifully even.{% endif %}</p></div>
+    <div class="balance-mark" aria-hidden="true">{{ '↗' if user_balance >= 0 else '↘' }}</div>
+  </article>
+  <article class="settle-summary">
+    <div class="section-label"><span>Settle-up</span><a href="/houses/{{ active_house.id }}/settle">View all →</a></div>
+    {% if user_suggestions %}
+      {% for item in user_suggestions[:2] %}<div class="settle-row"><span class="avatar small">{{ member_names[item.from_user_id][:1] }}</span><div><strong>{% if item.from_user_id == current_user.id %}You pay {{ member_names[item.to_user_id] }}{% else %}{{ member_names[item.from_user_id] }} pays you{% endif %}</strong><small>Suggested from the house balance</small></div><b>{{ item.amount_cents|money }}</b></div>{% endfor %}
+    {% else %}<div class="empty-compact"><span>✓</span><p><strong>All settled.</strong><br>No payments needed right now.</p></div>{% endif %}
+  </article>
+</section>
+<section class="dashboard-grid">
+  <article class="ledger-panel">
+    <div class="panel-heading"><div><span class="eyebrow">House ledger</span><h2>Recent purchases</h2></div><a href="/houses/{{ active_house.id }}/purchases/new">Add another</a></div>
+    {% if purchases %}<div class="ledger-list">{% for purchase in purchases %}<div class="ledger-row"><span class="date-block"><b>{{ purchase.purchased_on.strftime('%d') }}</b><small>{{ purchase.purchased_on.strftime('%b') }}</small></span><div class="ledger-main"><strong>{{ purchase.description }}</strong><span>{{ purchase.payer.name }} paid · <em>{{ purchase.category.name }}</em></span></div><strong class="ledger-amount">{{ purchase.amount_cents|money }}</strong><a class="row-action" href="/houses/{{ active_house.id }}/purchases/{{ purchase.id }}/edit" aria-label="Edit {{ purchase.description }}">Edit</a></div>{% endfor %}</div>{% else %}<div class="empty-state"><span class="empty-symbol">＋</span><h3>Your ledger is ready.</h3><p>Add the first shared purchase to see balances come to life.</p><a class="button small" href="/houses/{{ active_house.id }}/purchases/new">Add first purchase</a></div>{% endif %}
+  </article>
+  <aside class="roommate-panel">
+    <div class="panel-heading"><div><span class="eyebrow">At a glance</span><h2>Housemates</h2></div><span>{{ members|length }} total</span></div>
+    {% for member in members %}<div class="roommate-row"><span class="avatar tinted">{{ member.name[:1]|upper }}</span><div><strong>{{ member.name }}{% if member.id == current_user.id %} <small>(you)</small>{% endif %}</strong><span>{{ 'is owed' if net[member.id] > 0 else ('owes' if net[member.id] < 0 else 'is settled') }}</span></div><b class="{{ 'positive' if net[member.id] > 0 else ('negative' if net[member.id] < 0 else '') }}">{{ net[member.id]|money }}</b></div>{% endfor %}
+    <div class="invite-inline"><p>Invite a roommate to this house.</p><button class="text-button copy-button" data-copy="{{ request.base_url }}join/{{ active_house.invite_code }}">Copy invite</button></div>
+  </aside>
+</section>
+{% endblock %}
+

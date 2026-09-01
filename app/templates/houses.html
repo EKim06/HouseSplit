@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Your houses — HouseSplit{% endblock %}
+{% block content %}
+<div class="standalone-page">
+  <div class="page-heading"><div><span class="kicker">Your shared spaces</span><h1>Choose a house</h1><p>Open an existing ledger, create a new one, or join through an invite link.</p></div></div>
+  {% if error %}<div class="form-error">{{ error }}</div>{% endif %}
+  <div class="house-grid">
+    {% for house in houses %}<a class="house-tile" href="/houses/{{ house.id }}"><span class="house-letter">{{ house.name[:1]|upper }}</span><div><h2>{{ house.name }}</h2><p>Open household ledger</p></div><span class="arrow">→</span></a>{% endfor %}
+    <div class="house-tile create-tile"><div><span class="eyebrow">Create a new house</span><h2>Make room for everyone.</h2></div><form action="/houses" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label class="sr-only" for="house-name">House name</label><div class="inline-form"><input id="house-name" name="name" required placeholder="e.g. Sunday House"><button class="button" type="submit">Create</button></div></form></div>
+  </div>
+</div>
+{% endblock %}
+
